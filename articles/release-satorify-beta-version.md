@@ -45,10 +45,11 @@ https://x.com/taishi_jade/status/1878035585673347477?ref_src=twsrc%5Etfw
 
 ## サービスの概要
 
-このサービスは、『さとり構文ジェネレーター』（通称：『Satorify』）という X（旧 Twitter）でバズを連発する「さとり構文を」を誰でも簡単に作成することができるサービスです。
+このサービスは、『さとり構文ジェネレーター』（通称：『Satorify』）[『さとり構文ジェネレーター』（通称：『Satorify』）](https://www.satorify.jp/)という X（旧 Twitter）でバズを連発する「さとり構文を」を誰でも簡単に作成することができるサービスです。[概要](https://www.solomaker.dev/products/069e7ef7-ea4b-46e1-a96e-da3ff1d59686)
 
 「さとり構文」とは X（旧 Twitter）でバズを連発する「さとり([@satori_sz9](https://x.com/satori_sz9))」さんが考案した、短くても効果的な文章構造です。
 
+https://www.satorify.jp/
 さとり構文の詳細は[こちら](https://note.com/nogu66/n/n935806694006)でご覧いただけます。
 
 ## システム構成と使用技術
