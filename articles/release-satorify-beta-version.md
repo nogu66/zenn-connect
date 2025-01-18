@@ -31,9 +31,9 @@ published: false
 
 まずは、以下の投稿をご覧ください。
 
-<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">ありがとうございます！<br>さとりさんの『1秒で伝えるわざ』をNotebookLMを使いながら、自分なりに整理してみました！<br>その整理内容を元に、ChatGPTのo1でプロンプトを考え、LLMに構文パターンと入力文章を与えて実行しています！<br>モデルはひとまずDeepSeekを使っています🐳 <a href="https://t.co/iz1zmPMQWc">https://t.co/iz1zmPMQWc</a></p>&mdash; nogu | AI×Dev (@_nogu66) <a href="https://twitter.com/_nogu66/status/1878042981997125780?ref_src=twsrc%5Etfw">January 11, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+https://x.com/_nogu66/status/1878042981997125780?ref_src=twsrc%5Etfw
 
-<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">『さとり構文ジェネレーター』なるものがSolomakerに投稿されてて草ｗｗｗ<br><br>早速使ってみたけど、想像以上にさとりさんで草ｗｗｗ<br><br>結果はリプ欄に👇 <a href="https://t.co/RW62P0ZNdz">pic.twitter.com/RW62P0ZNdz</a></p>&mdash; Taishi Yamasaki🚀ソロメイカー (@taishi_jade) <a href="https://twitter.com/taishi_jade/status/1878035585673347477?ref_src=twsrc%5Etfw">January 11, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+https://x.com/taishi_jade/status/1878035585673347477?ref_src=twsrc%5Etfw
 
 この投稿はいずれも、私が個人開発したサービスが 2 日で 3 万リーチを達成した際の投稿です。
 
