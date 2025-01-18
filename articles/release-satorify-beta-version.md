@@ -1,6 +1,6 @@
 ---
 title: "個人開発したサービスが２日で3 万リーチした話"
-emoji: "👋"
+emoji: "🚀"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics:
   [
