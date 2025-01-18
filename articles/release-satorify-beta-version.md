@@ -31,8 +31,10 @@ published: false
 
 まずは、以下の投稿をご覧ください。
 
+![Xの投稿](/images/release-satorify-beta-version/post-1.png "@_nogu66の投稿")
 https://x.com/_nogu66/status/1878042981997125780?ref_src=twsrc%5Etfw
 
+![Xの投稿](/images/release-satorify-beta-version/post-2.png "@taishi_jadeの投稿")
 https://x.com/taishi_jade/status/1878035585673347477?ref_src=twsrc%5Etfw
 
 この投稿はいずれも、私が個人開発したサービスが 2 日で 3 万リーチを達成した際の投稿です。
