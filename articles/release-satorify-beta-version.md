@@ -16,7 +16,7 @@ topics:
     さとり構文,
     Cursor,
   ]
-published: true
+published: false
 ---
 
 ## はじめに
