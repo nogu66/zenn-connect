@@ -3,7 +3,7 @@ title: "Vibe Codingハッカソン参戦記：Claudeと駆け抜けた4時間ア
 emoji: "🚀"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["ハッカソン", "Claude", "AI", "開発プロセス"]
-published: true
+published: false
 ---
 
 ## はじめに
