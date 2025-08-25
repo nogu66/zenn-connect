@@ -1,5 +1,5 @@
 ---
-title: "「Vibe Coding: 1-Day Ship Challenge」ハッカソン参加レポート"
+title: " イベントレポート：「Vibe Coding: 1-Day Ship Challenge」ハッカソン"
 emoji: "🚀"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["ハッカソン", "Shipaton", "AI", "RevenueCat"]
