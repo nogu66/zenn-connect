@@ -112,7 +112,7 @@ npm install
 ```bash
 cp .env.example .env
 ```
-必要に応じて、`.env` ファイルを編集して、デフォルトのポート `3001` などを変更できます。
+必要に応じて、`.env` ファイルを編集して、デフォルトのポート `5173` などを変更できます。
 
 `.env`
 ```.env
@@ -125,7 +125,7 @@ cp .env.example .env
 
 # Backend server port (Express API + WebSocket server)
 #API server
-PORT=3001
+PORT=5173
 #Frontend port
 VITE_PORT=5173
 ```
@@ -138,7 +138,7 @@ npm run dev
 ![起動](/images/claudecodeui/npm-run-dev.png)
 
 
-ブラウザで `http://localhost:3001` を開くと、UIが表示されます。
+ブラウザで `http://localhost:5173` を開くと、UIが表示されます。
 
 ![UI](/images/claudecodeui/session.png)
 
@@ -157,7 +157,7 @@ npm run dev
 
 - **Cloudflareアカウント**: 無料で作成できます。
 - **独自ドメイン**: Cloudflareに登録するためのドメインが必要です。
-- **`Claude Code UI`がローカルで起動していること**: `http://localhost:3001` でアクセスできる状態にしておいてください。
+- **`Claude Code UI`がローカルで起動していること**: `http://localhost:5173` でアクセスできる状態にしておいてください。
 
 ### 1. `cloudflared` のインストール
 
@@ -252,7 +252,7 @@ credentials-file: /Users/<YOUR_USERNAME>/.cloudflared/<TUNNEL_ID>.json
 
 ingress:
   - hostname: <SUBDOMAIN.YOUR_DOMAIN>
-    service: http://localhost:3001
+    service: http://localhost:5173
   - service: http_status:404
 ```
 `<TUNNEL_ID>`, `<YOUR_USERNAME>`, `<SUBDOMAIN.YOUR_DOMAIN>` を自分のものに書き換えてください。
