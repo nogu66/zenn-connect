@@ -279,3 +279,4 @@ cloudflared tunnel run
 ## 参考
 - https://claudecodeui.com/
 - https://github.com/siteboon/claudecodeui
+- https://zenn.dev/takajun/articles/fbd783e459c722
