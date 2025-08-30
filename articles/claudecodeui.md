@@ -15,6 +15,8 @@ published: false
 
 本記事で紹介する **`Claude Code UI`** は、この体験を革新します。ブラウザ上で直感的に操作できるGUIを提供し、まるでチャットアプリのようにAIとの対話を実現。さらに、**`Cloudflare Tunnel`** を組み合わせることで、外出先のスマートフォンからでも、自宅のPC環境に安全にアクセスし、本格的なコーディングを可能にします。
 
+https://x.com/masa_oka108/status/1960832969217859847
+
 この記事を読めば、あなたも場所を選ばずに快適なAIコーディング環境を構築する方法を具体的に理解できます。
 
 ### 対象読者
@@ -76,7 +78,7 @@ https://github.com/siteboon/claudecodeui
 - **Why**: プロジェクトごとや、解決したい課題ごとにセッションを分けることで、コンテキストが混ざるのを防ぎます。「あの機能についてAIと相談した履歴はどこだっけ？」と探す手間がなくなります。
 - **How**: 新しいチャットを開始すると新しいセッションが作られ、過去のセッションはリストから選択するだけでいつでもその時の状態に戻ることができます。
 
-![セッション](/images/claudecodeui/session.png)
+![セッション](/images/claudecodeui/new-session.png)
 
 ## 具体的な導入手順
 
@@ -141,6 +143,126 @@ npm run dev
 
 ### セキュリティに関する注意
 **重要**: セキュリティ上の理由から、インストール直後はすべてのClaude Codeツール（ファイルの読み書きやコマンド実行など）が無効になっています。右上の設定メニューから、自分が利用したいツールを選択して有効化してください。
+
+## Cloudflare Tunnelで外部からアクセスする
+
+`Claude Code UI` をローカルでセットアップできたら、次はいよいよ `Cloudflare Tunnel` を使って、外出先のスマートフォンや別のPCからでもアクセスできるように設定します。
+
+`Cloudflare Tunnel` は、面倒なポート開放やグローバルIPアドレスの心配をすることなく、ローカルで実行されているサービスを安全にインターネットへ公開できる非常に便利な機能です。
+
+### 前提条件
+
+- **Cloudflareアカウント**: 無料で作成できます。
+- **独自ドメイン**: Cloudflareに登録するためのドメインが必要です。
+- **`Claude Code UI`がローカルで起動していること**: `http://localhost:3001` でアクセスできる状態にしておいてください。
+
+### 1. `cloudflared` のインストール
+
+まず、Cloudflare Tunnelを操作するためのコマンドラインツール `cloudflared` をインストールします。お使いのOSに合った方法でインストールしてください。
+
+**macOS (Homebrew)**
+```bash
+brew install cloudflare/cloudflare/cloudflared
+```
+
+**Windows (Scoop)**
+```bash
+scoop install cloudflared
+```
+
+**Linux**
+```bash
+# .deb (Debian, Ubuntu)
+curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+sudo dpkg -i cloudflared.deb
+
+# .rpm (Red Hat, CentOS)
+curl -L --output cloudflared.rpm https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.rpm
+sudo rpm -i cloudflared.rpm
+```
+インストール後、`cloudflared --version` を実行して、バージョン情報が表示されれば成功です。
+
+### 2. Cloudflareへのログイン
+
+次に、`cloudflared` をあなたのCloudflareアカウントに接続します。
+以下のコマンドを実行してください。
+
+```bash
+cloudflared tunnel login
+```
+
+コマンドを実行すると、ターミナルにURLが表示され、自動的にブラウザが開いてCloudflareへのログインを求められます。
+
+![Cloudflareへのログイン](/images/claudecodeui/cloudflare-login.png)
+
+ログイン後、`cloudflared`があなたのドメインにアクセスすることを許可する画面が表示されます。ここで利用したいドメインを選択し、「Authorize」ボタンをクリックします。
+※この機能を利用するには、あらかじめCloudflareに独自ドメインを登録しておく必要があります。
+
+![Connect](/images/claudecodeui/connect.png)
+
+![ドメインの設定](/images/claudecodeui/domain.png)
+
+![認証](/images/claudecodeui/authorize.png)
+
+成功すると、以下のような画面が表示されます。
+
+![成功](/images/claudecodeui/complete.png)
+
+同時に、ターミナル側にも成功メッセージが表示され、`~/.cloudflared/` ディレクトリに証明書ファイル (`cert.pem`) が生成されていれば、アカウントへの接続は完了です。
+
+![ログイン成功](/images/claudecodeui/success-login.png)
+
+### 3. トンネルの作成
+
+次に、外部からのアクセスを受け付けるための「トンネル」を作成します。
+`my-claude-code-ui` の部分は、好きな名前に変更できます。
+
+```bash
+cloudflared tunnel create my-claude-code-ui
+```
+
+このコマンドを実行すると、トンネルのIDと、JSON形式のクレデンシャルファイル（`<TUNNEL_ID>.json`）が生成されます。このIDは後で使いますので、控えておいてください。
+
+### 4. トンネルのルーティング設定
+
+作成したトンネルに、「どのドメインへのアクセスを、どのローカルサービスに転送するか」を設定します。
+
+以下のコマンドを実行してください。`<SUBDOMAIN.YOUR_DOMAIN>` の部分を、あなたが使いたいサブドメインとドメインに置き換えます。`<TUNNEL_ID>` は先ほど控えたIDです。
+
+```bash
+cloudflared tunnel route dns <TUNNEL_ID> <SUBDOMAIN.YOUR_DOMAIN>
+```
+
+これにより、CloudflareのDNSに `SUBDOMAIN.YOUR_DOMAIN` のCNAMEレコードが自動的に作成され、トンネルに紐付けられます。
+
+### 5. トンネルの実行
+
+最後に、トンネルを実行して、ローカルの `Claude Code UI` を公開します。
+`Claude Code UI` は `http://localhost:5173` で動いているので、そこへ転送するように指定します。
+
+`~/.cloudflared/` ディレクトリに `config.yml` というファイルを作成し、以下のように記述します。
+
+`config.yml`:
+```yaml
+tunnel: <TUNNEL_ID>
+credentials-file: /Users/<YOUR_USERNAME>/.cloudflared/<TUNNEL_ID>.json
+
+ingress:
+  - hostname: <SUBDOMAIN.YOUR_DOMAIN>
+    service: http://localhost:3001
+  - service: http_status:404
+```
+`<TUNNEL_ID>`, `<YOUR_USERNAME>`, `<SUBDOMAIN.YOUR_DOMAIN>` を自分のものに書き換えてください。
+
+この設定ファイルがあれば、以下のコマンドだけでトンネルを起動できます。
+```bash
+cloudflared tunnel run
+```
+
+![モバイルからの接続](/images/claudecodeui/tunner-mobile.jpeg =250x)
+
+
+これで、いつでもどこからでも、あなたの `Claude Code UI` にアクセスできるようになりました！
 
 ## おわりに
 本記事では、`Claude Code UI` がどのようにCLIベースのAIコーディングの課題を解決し、開発体験を向上させるかを詳細に解説しました。
