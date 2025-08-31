@@ -3,7 +3,7 @@ title: "「Vibe Coding」から「Spec-Driven Development」仕様駆動開発�
 emoji: "🌱"
 type: "tech"
 topics: ["AI", "SDD", "SpecDrivenDevelopment", "バイブコーディング", "仕様駆動開発"]
-published: false
+published: true
 ---
 
 # 「Vibe」から「Spec-Driven」な開発へ。AI時代の仕様駆動開発（SDD）入門
