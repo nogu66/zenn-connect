@@ -2,7 +2,7 @@
 title: "「Vibe Coding」から「Spec-Driven Development」仕様駆動開発（SDD）入門"
 emoji: "🌱"
 type: "tech"
-topics: ["AI", "SDD", "SpecDrivenDevelopment", "バイブコーディング", "仕様駆動開発"]
+topics: ["AI", "SDD", "zennfes2025ai", "バイブコーディング", "仕様駆動開発"]
 published: true
 ---
 
