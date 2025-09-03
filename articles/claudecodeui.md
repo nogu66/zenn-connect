@@ -2,7 +2,7 @@
 title: "【徹底解説】Claude Code UI と Cloudflare Tunnelでスマホから快適にAIコーディング"
 emoji: "🚀"
 type: "tech"
-topics: ["ClaudeCode", "AI", "Claude", "Cloudflare", zennfes2025free]
+topics: ["ClaudeCode", "AI", "Claude", "Cloudflare",  "zennfes2025ai"]
 published: true
 ---
 
