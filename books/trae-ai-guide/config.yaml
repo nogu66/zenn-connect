@@ -1,0 +1,9 @@
+title: "AIエディタTRAE完全ガイド:"
+summary: "本書は、AI開発パートナー「TRAE」に関する基本的な知識から、その多彩な機能、具体的な使い方までを網羅的に解説します。"
+topics: ["TRAE", "AIエディタ","生成AI"]
+published: false
+price: 0 # 有料の場合200〜5000
+# 本に含めるチャプターを順番に並べましょう
+chapters:
+  - introduction
+  - about
