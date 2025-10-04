@@ -1,9 +1,10 @@
 ---
-title: "ハッカソン45回優勝者が教える、個人開発で成功するための超実践ガイド"
+title: "ハッカソン45回優勝者が教える、個人開発・ハッカソンで成功するための超実践ガイド"
 emoji: "🚀"
 type: "tech"
-topics: ["hackathon", "個人開発", "アイデア", "高速開発", "グロースハック"]
-published: false
+topics: ["ハッカソン", "個人開発", "アイデア", "zennfes2025free
+"]
+published: true
 ---
 
 ## はじめに
