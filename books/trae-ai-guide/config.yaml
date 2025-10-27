@@ -7,3 +7,9 @@ price: 0 # 有料の場合200〜5000
 chapters:
   - introduction
   - about
+  - ide-mode
+  - solo-mode
+  - trae-cue
+  - technical-features
+  - use-cases
+  - future-outlook
