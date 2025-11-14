@@ -7,6 +7,12 @@ description: "Write high-quality Zenn technical articles following Japanese arti
 
 This skill enables Claude to write high-quality technical articles for Zenn.dev following established Japanese technical writing best practices.
 
+## Author Introduction
+
+**こんんちは、noguです。**
+
+X (Twitter): https://x.com/_nogu66
+
 ## Core Philosophy
 
 **Technology is a means to solve problems, not the end goal.**
@@ -32,160 +38,32 @@ Use this skill when:
 
 ## Article Structure
 
-Follow this structure for all Zenn articles:
+**記事の詳細な構造とテンプレートは `ARTICLE_TEMPLATE.md` を参照してください。**
 
-### 1. Title (タイトル)
+このテンプレートには以下が含まれています:
+- 記事の完全な構成（タイトル、はじめに、問題提起、解決策、結果、おわりに）
+- 各セクションの具体的なフォーマットと例
+- 必須チェックリスト
+- よく使うフレーズ集
 
-**Format**: Include both the problem solved and the main technology used.
+### 記事構成の概要
 
-**Good examples**:
-- "ClaudeのSkills機能で「毎回同じこと説明する問題」を解決する"
-- "【TypeScript】zodを使って環境変数の静的型付けとバリデーションを実現する"
+1. **Title (タイトル)**: 問題と解決策の技術を含める
+2. **Author Introduction (自己紹介)**: noguの紹介とXリンク
+3. **Introduction (はじめに)**: 対象読者、記事のスコープ、読者が得られるもの
+4. **Problem Statement (問題提起)**: 共感できる具体的な課題の説明
+5. **Solution Overview (解決策の概要)**: 技術の簡潔な紹介
+6. **Detailed Explanation (詳細説明)**: What/Why/Howの構造で説明
+7. **Results/Outcomes (やってみた結果)**: 実際の成果と学び
+8. **Conclusion (おわりに)**: まとめ、次のステップ、フォローCTA（必須）
+9. **References (参考リンク)**: 重要な情報源のリスト
 
-**Bad examples**:
-- "Claudeがすごい" (Technology showcase, no problem stated)
-- "環境変数について" (No solution, no specific technology)
+### 重要なポイント
 
-Include keywords that readers would use when searching.
-
-### 2. Introduction (はじめに)
-
-Must clearly state three elements:
-
-#### 2.1. Target Readers (この記事の対象読者)
-```markdown
-**この記事の対象読者**
-- [Specific reader profile 1]
-- [Specific reader profile 2]
-- [Specific reader profile 3]
-```
-
-Example:
-```markdown
-**この記事の対象読者**
-- Claude Code、Claude.ai、Claude APIを業務で活用している開発者
-- AIに同じ指示を何度も繰り返している人
-- 組織固有のワークフローやブランドガイドラインをAIに適用したい人
-```
-
-#### 2.2. Article Scope (この記事でわかること)
-Clearly state what WILL and will NOT be covered:
-
-```markdown
-**この記事でわかること**
-- [Key learning point 1]
-- [Key learning point 2]
-- [Key learning point 3]
-
-**この記事で扱わないこと**
-- [Out of scope topic 1]
-- [Out of scope topic 2]
-```
-
-#### 2.3. Reader Benefits (読者が得られるもの)
-What will readers gain by reading this article to the end?
-
-### 3. Main Content (本文)
-
-#### 3.1. Problem Statement
-Start by describing the problem readers can relate to:
-
-```markdown
-## 「[Relatable problem description]」
-
-[Describe the pain points readers experience]
-
-- Concrete example 1
-- Concrete example 2
-- Concrete example 3
-
-[Explain why this is frustrating or time-consuming]
-
-**[Technology Name]は、この問題を解決します。**
-```
-
-#### 3.2. Solution Overview
-Briefly introduce the solution before diving into details.
-
-#### 3.3. Detailed Explanation (What/Why/How)
-
-For each aspect, explain:
-- **What**: What are you doing?
-- **Why**: Why is this necessary? Why this approach?
-- **How**: Concrete implementation with code examples
-
-#### 3.4. Code Examples
-
-**Requirements**:
-- All code must be tested and actually work
-- Include necessary imports and setup
-- Make it copy-paste-able when possible
-- Use appropriate syntax highlighting
-
-```markdown
-```typescript
-// Working, complete example
-import { something } from 'library';
-
-function example() {
-  // Implementation
-}
-\`\`\`
-```
-
-For long code, provide GitHub repository links.
-
-#### 3.5. Visual Aids
-
-- Use diagrams for complex concepts or architecture
-- Use screenshots for step-by-step instructions or results
-- Ensure all images enhance understanding
-
-### 4. Results/Outcomes (やってみた結果)
-
-Show what happened when you applied the solution:
-- Success stories
-- Performance improvements
-- Challenges encountered
-- Lessons learned
-
-Be honest about both successes and limitations.
-
-### 5. Conclusion (おわりに)
-
-Must include:
-
-#### 5.1. Summary
-Briefly recap the main points:
-```markdown
-[Technology]は、**「[Problem]」を解決する**[adjective]仕組みです。
-
-[Summary of how it solves the problem]
-```
-
-#### 5.2. Next Steps
-Give readers actionable next steps:
-```markdown
-### 今すぐ始めるには
-
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
-```
-
-#### 5.3. Future Outlook (Optional)
-Mention advanced topics or future possibilities.
-
-#### 5.4. Acknowledgments (Optional)
-Thank people who helped or references that were crucial.
-
-### 6. References (参考リンク)
-
-List key references:
-- Official documentation
-- GitHub repositories
-- Related articles
-- Tools or platforms mentioned
+- すべてのコード例は動作確認済みであること
+- 一文一義を徹底すること
+- What/Why/Howを明確に説明すること
+- 記事の最後に必ずフォローCTAを含めること
 
 ## Writing Style Guidelines
 

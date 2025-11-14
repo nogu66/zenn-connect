@@ -11,5 +11,13 @@
   "license": "ISC",
   "dependencies": {
     "zenn-cli": "^0.2.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nogu66/zenn-connect.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nogu66/zenn-connect/issues"
+  },
+  "homepage": "https://github.com/nogu66/zenn-connect#readme"
 }
