@@ -6,6 +6,10 @@ topics: ["gemini", "googleapi", "googlemaps", "ai", "api"]
 published: false
 ---
 
+こんにちは、noguです。
+
+https://x.com/_nogu66
+
 ## はじめに
 
 生成AIを活用したアプリケーション開発において、「近くのおすすめのカフェは?」「この場所のレストランの営業時間は?」といった位置情報に関する質問への回答は、常に課題となってきました。一般的なLLMは学習データに基づいた知識しか持たず、最新の店舗情報や正確な地理データにアクセスできないため、曖昧または古い情報を返してしまうことがありました。
@@ -374,7 +378,13 @@ Google Maps Groundingは、位置情報を活用したAIアプリケーション
 
 位置情報とAIの組み合わせは、今後さらに進化していくでしょう。Google Maps Groundingは、その第一歩として非常に有望な選択肢です。
 
-### 参考リンク
+---
+
+この記事が役に立ったら、Xをフォローしていただけると嬉しいです!
+
+https://x.com/_nogu66
+
+## 参考リンク
 
 - [Google Maps Grounding 公式ドキュメント](https://ai.google.dev/gemini-api/docs/maps-grounding)
 - [Gemini API 料金ページ](https://ai.google.dev/gemini-api/docs/pricing)

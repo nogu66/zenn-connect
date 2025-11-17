@@ -3,7 +3,12 @@
     "allow": [
       "Bash(mkdir:*)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:support.claude.com)"
+      "WebFetch(domain:support.claude.com)",
+      "WebSearch",
+      "WebFetch(domain:claude.com)",
+      "Skill(zenn-article-writer)",
+      "Bash(cd:*)",
+      "WebFetch(domain:www.claude.com)"
     ],
     "deny": [],
     "ask": []
