@@ -1,16 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mkdir:*)",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:support.claude.com)",
-      "WebSearch",
-      "WebFetch(domain:claude.com)",
-      "Skill(zenn-article-writer)",
-      "Bash(cd:*)",
-      "WebFetch(domain:www.claude.com)"
+      "Bash(npx zenn new:article)"
     ],
     "deny": [],
     "ask": []
+  },
+  "hooks": {
+    "SubagentStart": "echo 'SubAgent {{subagent_name}} が起動しました' >> logs/subagent.log"
   }
 }
