@@ -1,7 +1,7 @@
 ---
 title: "お前はまだRorkを知らない"
 emoji: "🍎"
-type: "idea"
+type: "tech"
 topics: ["rork", "ai", "アプリ開発", "ノーコード"]
 published: false
 ---
