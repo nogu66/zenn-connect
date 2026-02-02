@@ -7,6 +7,5 @@
     "ask": []
   },
   "hooks": {
-    "SubagentStart": "echo 'SubAgent {{subagent_name}} が起動しました' >> logs/subagent.log"
   }
 }
