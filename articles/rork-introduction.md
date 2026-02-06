@@ -53,7 +53,7 @@ https://rork.com/?ref=nogu
 
 2025年2月12日に正式ローンチ。創業者は**Levan Kvirkvelia氏**と**Daniel Dhawan氏**で、「技術的なスキルや資金力に関わらず、誰もがアイデアを形にできる世界」の実現を目指しています。
 
-技術基盤として**Expo**と**React Native**を採用しており、生成されたアプリケーションはiOSとAndroidの両方で動作します。AIモデルには**Opus 4.5、Sonnet 4.5、 GPT-5.2、Gemini 3 Pro**といった複数のモデルを使用することができます。
+技術基盤として**Expo**と**React Native**を採用しており、生成されたアプリケーションはiOSとAndroidの両方で動作します。AIモデルには**(New)Opus 4.6、Opus 4.5、Sonnet 4.5、 GPT-5.2、Gemini 3 Pro**といった複数のモデルを使用することができます。
 
 
 
