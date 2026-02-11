@@ -1,5 +1,5 @@
 ---
-title: "Rorkの設計パターンから学ぶAI Agent開発"
+title: "Skills Orchestral"
 emoji: "🧠"
 type: "tech"
 topics: ["rork", "ai", "エージェント設計", "アーキテクチャ"]
@@ -8,13 +8,16 @@ published: false
 
 ## はじめに
 
-**こんにちは、noguです。**
+こんにちは、noguです。
 
-X (Twitter): https://x.com/_nogu66
+本記事は以下の記事の続編です。（というよりも以下が本記事の導入です、）
+
+https://zenn.dev/nogu66/articles/rork-introduction
 
 ### この記事の対象読者
 
-- AI Agentを自分で構築している開発者
+- AIエージェントsを自分で構築している開発者
+- AIエージェントの内部に興味がある人
 - LLM活用時の設計パターンに興味がある方
 - Rorkの内部設計に興味がある方
 - マルチエージェントシステムについて学びたい方
