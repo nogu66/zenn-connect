@@ -4,7 +4,6 @@ emoji: "📊"
 type: "tech"
 topics: ["claude", "mcp", "drawio", "ai", "可視化"]
 published: true
-published_at: 2025-02-13 17:00
 ---
 
 ## はじめに
