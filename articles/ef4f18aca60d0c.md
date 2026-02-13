@@ -2,7 +2,7 @@
 title: "ClaudeのSkills機能で「毎回同じこと説明する問題」を解決する"
 emoji: "🛠️"
 type: "tech"
-topics: ["claude", "ai", "開発効率化", "自動化"]
+topics: ["claudecode", "ai", "mcp", "drawio","claude"]
 published: false
 ---
 
@@ -10,7 +10,7 @@ published: false
 
 **この記事の対象読者**
 - Claude Code、Claude.ai、Claude APIを業務で活用している開発者
-- AIに同じ指示を何度も繰り返している人
+- draw.io MCPに興味がある人
 - 組織固有のワークフローやブランドガイドラインをAIに適用したい人
 
 **この記事でわかること**

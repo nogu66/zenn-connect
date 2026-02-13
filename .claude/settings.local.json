@@ -6,6 +6,9 @@
     "deny": [],
     "ask": []
   },
-  "hooks": {
-  }
+  "enabledMcpjsonServers": [
+    "excalidraw"
+  ],
+  "hooks": {},
+  "enableAllProjectMcpServers": true
 }
