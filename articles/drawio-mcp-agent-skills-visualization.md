@@ -370,4 +370,4 @@ https://x.com/_nogu66
 - [draw.io MCP - npm](https://www.npmjs.com/package/@drawio/mcp)
 - [draw.io MCP - GitHub](https://github.com/jgraph/drawio-mcp)
 - [Claude Skills公式ドキュメント](https://docs.claude.com/ja/docs/agents-and-tools/agent-skills/overview)
-- [Claude CodeにおけるSkillsとSubAgentsの使い分け - Zenn](https://zenn.dev/nogu66/articles/claude-code-think-abount-skills-and-subagent)
+- [Claude CteodeにおけるSkillsとSubAgentsの使い分け - Zenn](https://zenn.dev/nogu66/articles/claude-code-think-abount-skills-and-subagent)

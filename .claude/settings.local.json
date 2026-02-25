@@ -1,14 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx zenn new:article)"
+      "Bash(npx zenn new:article)",
+      "mcp__plugin_playwright_playwright__browser_evaluate",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot"
     ],
     "deny": [],
     "ask": []
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "excalidraw"
   ],
-  "hooks": {},
-  "enableAllProjectMcpServers": true
+  "hooks": {}
 }
