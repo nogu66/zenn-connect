@@ -1,9 +1,9 @@
 ---
-title: "Rork Max登場 — ブラウザだけでSwiftネイティブアプリを作ってApp Storeに出せる時代が来た"
+title: "Rork Max登場 — ブラウザだけでSwifアプリを作れる時代が来た"
 emoji: "🍎"
 type: "tech"
-topics: ["rork", "swift", "ios", "ai", "アプリ開発"]
-published: false
+topics: ["Rork", "swift", "ios", "ai", "アプリ開発"]
+published: true
 ---
 
 ## はじめに
