@@ -1,0 +1,26 @@
+{
+  "skill_name": "opinionated-tech-writing",
+  "evals": [
+    {
+      "id": 0,
+      "name": "design-from-scratch",
+      "prompt": "Claude CodeのSkills機能についてZenn記事を書きたいです。タイトル案、冒頭1文、記事構成を提案してください。",
+      "expected_output": "強い主張を含むタイトル案（複数）、Hill I will die on形式の冒頭1文、Whyを深掘りする構成の提案",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "rewrite-weak-intro",
+      "prompt": "次の記事冒頭が弱いので、主張駆動型に書き直してください。\n\n----\n## はじめに\n\nClaude Code Skillsは、Claudeに新しい手順書を追加できる機能です。この記事ではSkillsの使い方を解説します。Skillsを使うことで、繰り返し使う手順を効率化できます。便利な機能なので、ぜひ試してみてください。\n----",
+      "expected_output": "中立紹介から、個人の確信を表明するスタイルへの書き直し。失敗談や具体的な変化が含まれる",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "ideation-no-topic",
+      "prompt": "MCPサーバーを自作した経験を技術記事にしたいんですが、どこから手をつければいいですか？テーマがまだぼんやりしています。",
+      "expected_output": "Specベース執筆の提案、主張1行を絞り込むための質問、20-40項目のリストアップへの誘導",
+      "files": []
+    }
+  ]
+}

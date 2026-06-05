@@ -1,0 +1,28 @@
+{
+  "eval_id": 2,
+  "eval_name": "product-intro-raycast-typeC",
+  "prompt": "週末に作った Raycast 拡張を紹介する記事の目次を作って。インストールして使ってもらいたい。",
+  "expected_type": "C（プロダクト紹介）",
+  "assertions": [
+    {
+      "text": "記事タイプを C（プロダクト紹介） と正しく1つに判定している",
+      "type": "correct_type"
+    },
+    {
+      "text": "ストーリーパターンを1つ明示的に選んでいる",
+      "type": "single_story_pattern"
+    },
+    {
+      "text": "アウトラインの各見出しに「ここで何を書くか」の説明が添えられている",
+      "type": "annotated_outline"
+    },
+    {
+      "text": "数値・固有名詞を捏造せず、無い箇所はプレースホルダか正直な記述にしている",
+      "type": "no_fabrication"
+    },
+    {
+      "text": "締めが番号付きLessonsまたは価値・感情で閉じている",
+      "type": "proper_closing"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "expectations": [
+    {
+      "text": "記事タイプを C（プロダクト紹介） と正しく1つに判定している",
+      "passed": true,
+      "evidence": "「記事タイプ: プロダクト紹介」と明示（A/B/C記号はなし）"
+    },
+    {
+      "text": "ストーリーパターンを1つ明示的に選んでいる",
+      "passed": false,
+      "evidence": "5種のストーリーパターンから1つを明示選択していない"
+    },
+    {
+      "text": "アウトラインの各見出しに「ここで何を書くか」の説明が添えられている",
+      "passed": true,
+      "evidence": "設計方針と各見出しの中身を記述"
+    },
+    {
+      "text": "数値・固有名詞を捏造せず、無い箇所はプレースホルダか正直な記述にしている",
+      "passed": true,
+      "evidence": "Store/GitHub/画像はプレースホルダ"
+    },
+    {
+      "text": "締めが番号付きLessonsまたは価値・感情で閉じている",
+      "passed": true,
+      "evidence": "フィードバック歓迎・今後の予定で締める"
+    }
+  ],
+  "summary": {
+    "pass_rate": 0.8,
+    "passed": 4,
+    "failed": 1,
+    "total": 5
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "expectations": [
+    {
+      "text": "記事タイプを B（エンジニアリング教訓） と正しく1つに判定している",
+      "passed": true,
+      "evidence": "「記事タイプ：B — エンジニアリング教訓」と理由付きで明示"
+    },
+    {
+      "text": "ストーリーパターンを1つ明示的に選んでいる",
+      "passed": true,
+      "evidence": "「パターン4 — Attempt 連載」を主軸に選択（認証節のみパターン3併用と明記）"
+    },
+    {
+      "text": "アウトラインの各見出しに「ここで何を書くか」の説明が添えられている",
+      "passed": true,
+      "evidence": "各見出しに『← 何を書くか』を1行で添付"
+    },
+    {
+      "text": "数値・固有名詞を捏造せず、無い箇所はプレースホルダか正直な記述にしている",
+      "passed": true,
+      "evidence": "実体験で埋める箇所を【要差し込み】で明示し捏造を回避"
+    },
+    {
+      "text": "締めが番号付きLessonsまたは価値・感情で閉じている",
+      "passed": true,
+      "evidence": "締めは番号付きLessons 5点 +『Art, not Science』"
+    }
+  ],
+  "summary": {
+    "pass_rate": 1.0,
+    "passed": 5,
+    "failed": 0,
+    "total": 5
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "eval_id": 1,
+  "eval_name": "lessons-mcp-server-typeB",
+  "prompt": "自作 MCP サーバー開発の試行錯誤（ツール設計のやり直し・認証で詰まった）を技術記事にしたい。骨組みは？",
+  "expected_type": "B（エンジニアリング教訓）",
+  "assertions": [
+    {
+      "text": "記事タイプを B（エンジニアリング教訓） と正しく1つに判定している",
+      "type": "correct_type"
+    },
+    {
+      "text": "ストーリーパターンを1つ明示的に選んでいる",
+      "type": "single_story_pattern"
+    },
+    {
+      "text": "アウトラインの各見出しに「ここで何を書くか」の説明が添えられている",
+      "type": "annotated_outline"
+    },
+    {
+      "text": "数値・固有名詞を捏造せず、無い箇所はプレースホルダか正直な記述にしている",
+      "type": "no_fabrication"
+    },
+    {
+      "text": "締めが番号付きLessonsまたは価値・感情で閉じている",
+      "type": "proper_closing"
+    }
+  ]
+}
