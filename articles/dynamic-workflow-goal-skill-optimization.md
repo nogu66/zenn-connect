@@ -1,5 +1,5 @@
 ---
-title: "『Dynamic workflow』と『/goal』によるスキルの最適化手法"
+title: "Dynamic workflow と /goal コマンドによるスキルの最適化手法"
 emoji: "🎯"
 type: "tech"
 topics: ["claudecode", "claude", "ai"]
