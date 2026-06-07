@@ -3,8 +3,7 @@ title: "Dynamic workflow と /goal コマンドによるスキルの最適化手
 emoji: "🎯"
 type: "tech"
 topics: ["claudecode", "claude", "ai"]
-published: false
-published_at: 2026-6-8 7:59 # 例: 2025年12月25日15時
+published: true
 ---
 
 :::message alert
