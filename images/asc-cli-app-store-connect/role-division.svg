@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="792" viewBox="0 0 1320 792">
+<rect width="1320" height="792" fill="#F7F4ED"/>
+<g filter="url(#shadow)"><rect x="48" y="48" width="1224" height="652" rx="18" ry="18" fill="#FAF8F3" stroke="#E6E1D7" stroke-width="1"/></g>
+<path d="M 48 66 a18,18 0 0 1 18,-18 h1188 a18,18 0 0 1 18,18 v38 h-1224 z" fill="#ECE7DD"/>
+<line x1="48" y1="104" x2="1272" y2="104" stroke="#E6E1D7" stroke-width="1"/>
+<circle cx="86" cy="76.0" r="7" fill="#CFCAC0"/>
+<circle cx="112" cy="76.0" r="7" fill="#CFCAC0"/>
+<circle cx="138" cy="76.0" r="7" fill="#CFCAC0"/>
+<text x="660.0" y="81.0" font-family="Noto Sans Mono CJK JP" font-size="16" font-weight="400" fill="#8A8780" text-anchor="middle">roles.md</text>
+<defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#141413" flood-opacity="0.08"/></filter></defs>
+<text x="92" y="182" font-family="Noto Serif CJK JP" font-size="34" font-weight="600" fill="#141413" text-anchor="start">3つのレイヤーの役割分担</text>
+<text x="92" y="224" font-family="Noto Sans CJK JP" font-size="18" font-weight="400" fill="#8A8780" text-anchor="start">日常の入口は自然言語。その下で Skills と CLI が動く</text>
+<rect x="92" y="280" width="346.6666666666667" height="376" rx="16" ry="16" fill="#FFFFFF" stroke="#E6E1D7" stroke-width="1.5"/>
+<path d="M 156.0 314 L 166.24 333.76 L 186 344.0 L 166.24 354.24 L 156.0 374 L 145.76 354.24 L 126 344.0 L 145.76 333.76 Z" fill="none" stroke="#6A8CAF" stroke-width="2.5" stroke-linejoin="round"/>
+<text x="124" y="406" font-family="Noto Sans CJK JP" font-size="14" font-weight="600" fill="#8A8780" text-anchor="start" letter-spacing="0.08em">LAYER 01 &#183; 入口</text>
+<text x="124" y="444" font-family="Noto Serif CJK JP" font-size="26" font-weight="600" fill="#141413" text-anchor="start">AI エージェント</text>
+<text x="124" y="474" font-family="Noto Sans CJK JP" font-size="17" font-weight="400" fill="#57564F" text-anchor="start">自然言語の指示を受けて、</text>
+<text x="124" y="501" font-family="Noto Sans CJK JP" font-size="17" font-weight="400" fill="#57564F" text-anchor="start">スキルと CLI を組み合わせて実行する</text>
+<rect x="124" y="580" width="118" height="44" rx="22" ry="22" fill="#E5ECF3" stroke="#C2D2E1" stroke-width="1.5"/>
+<circle cx="146" cy="602.0" r="5.5" fill="#6A8CAF"/>
+<text x="162" y="608.0" font-family="Noto Sans Mono CJK JP" font-size="16" font-weight="400" fill="#6A8CAF" text-anchor="start">橋渡し役</text>
+<rect x="486.6666666666667" y="280" width="346.6666666666667" height="376" rx="16" ry="16" fill="#FFFFFF" stroke="#E6E1D7" stroke-width="1.5"/>
+<rect x="536.5866666666667" y="317.12" width="28.16" height="53.76" rx="4" fill="none" stroke="#C05E3D" stroke-width="2.5"/><line x1="542.5866666666667" y1="331.12" x2="558.7466666666667" y2="331.12" stroke="#C05E3D" stroke-width="2.5"/><line x1="542.5866666666667" y1="343.12" x2="558.7466666666667" y2="343.12" stroke="#C05E3D" stroke-width="2.5"/><line x1="542.5866666666667" y1="355.12" x2="550.7466666666667" y2="355.12" stroke="#C05E3D" stroke-width="2.5"/>
+<text x="518.6666666666667" y="406" font-family="Noto Sans CJK JP" font-size="14" font-weight="600" fill="#8A8780" text-anchor="start" letter-spacing="0.08em">LAYER 02 &#183; 手順</text>
+<text x="518.6666666666667" y="444" font-family="Noto Serif CJK JP" font-size="26" font-weight="600" fill="#141413" text-anchor="start">Agent Skills</text>
+<text x="518.6666666666667" y="474" font-family="Noto Sans CJK JP" font-size="17" font-weight="400" fill="#57564F" text-anchor="start">「何をどの順でやるか」を</text>
+<text x="518.6666666666667" y="501" font-family="Noto Sans CJK JP" font-size="17" font-weight="400" fill="#57564F" text-anchor="start">AI に教える手順書</text>
+<rect x="518.6666666666667" y="580" width="101" height="44" rx="22" ry="22" fill="#F7E7DF" stroke="#ECC4B2" stroke-width="1.5"/>
+<circle cx="540.6666666666667" cy="602.0" r="5.5" fill="#C05E3D"/>
+<text x="556.6666666666667" y="608.0" font-family="Noto Sans Mono CJK JP" font-size="16" font-weight="400" fill="#C05E3D" text-anchor="start">手順書</text>
+<rect x="881.3333333333334" y="280" width="346.6666666666667" height="376" rx="16" ry="16" fill="#FFFFFF" stroke="#E6E1D7" stroke-width="1.5"/>
+<rect x="917.1733333333334" y="320.96" width="56.32" height="46.08" rx="6" fill="none" stroke="#788C5D" stroke-width="2.5"/><path d="M 929.1733333333334 336.96 L 941.1733333333334 344.0 L 929.1733333333334 351.03999999999996" fill="none" stroke="#788C5D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="947.1733333333334" y1="351.03999999999996" x2="959.4933333333335" y2="351.03999999999996" stroke="#788C5D" stroke-width="2.5" stroke-linecap="round"/>
+<text x="913.3333333333334" y="406" font-family="Noto Sans CJK JP" font-size="14" font-weight="600" fill="#8A8780" text-anchor="start" letter-spacing="0.08em">LAYER 03 &#183; 実行</text>
+<text x="913.3333333333334" y="444" font-family="Noto Serif CJK JP" font-size="26" font-weight="600" fill="#141413" text-anchor="start">asc CLI</text>
+<text x="913.3333333333334" y="474" font-family="Noto Sans CJK JP" font-size="17" font-weight="400" fill="#57564F" text-anchor="start">実際に ASC API を叩く</text>
+<text x="913.3333333333334" y="501" font-family="Noto Sans CJK JP" font-size="17" font-weight="400" fill="#57564F" text-anchor="start">実行基盤</text>
+<rect x="913.3333333333334" y="580" width="118" height="44" rx="22" ry="22" fill="#E9EEE2" stroke="#CAD6BD" stroke-width="1.5"/>
+<circle cx="935.3333333333334" cy="602.0" r="5.5" fill="#788C5D"/>
+<text x="951.3333333333334" y="608.0" font-family="Noto Sans Mono CJK JP" font-size="16" font-weight="400" fill="#788C5D" text-anchor="start">実行基盤</text>
+<text x="462.6666666666667" y="446.0" font-family="Noto Sans Mono CJK JP" font-size="15" font-weight="500" fill="#57564F" text-anchor="middle">&#9312; 読む</text>
+<line x1="450.6666666666667" y1="468.0" x2="466.6666666666667" y2="468.0" stroke="#CBC8C0" stroke-width="2.5"/>
+<path d="M 466.6666666666667 460.0 L 484.6666666666667 468.0 L 466.6666666666667 476.0 Z" fill="#CBC8C0"/>
+<text x="857.3333333333334" y="446.0" font-family="Noto Sans Mono CJK JP" font-size="15" font-weight="500" fill="#57564F" text-anchor="middle">&#9313; 実行する</text>
+<line x1="845.3333333333334" y1="468.0" x2="861.3333333333334" y2="468.0" stroke="#CBC8C0" stroke-width="2.5"/>
+<path d="M 861.3333333333334 460.0 L 879.3333333333334 468.0 L 861.3333333333334 476.0 Z" fill="#CBC8C0"/>
+<text x="660.0" y="744" font-family="Noto Sans CJK JP" font-size="17" font-weight="400" fill="#8A8780" text-anchor="middle">AI エージェントが入口になり、Skills が手順を教え、CLI が手を動かす</text>
+</svg>
