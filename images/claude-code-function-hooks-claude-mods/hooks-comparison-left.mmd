@@ -1,0 +1,4 @@
+graph TD
+    A1["Claude Code"] -->|"exec起動 + stdin: JSON"| A2["外部プロセス（hookコマンド）"]
+    A2 -->|"stdout / exit code（許可・拒否・加工結果）"| A1
+    A2 -.->|"毎回使い捨て"| A3["プロセス終了"]

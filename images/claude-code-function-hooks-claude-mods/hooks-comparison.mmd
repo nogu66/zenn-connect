@@ -1,0 +1,14 @@
+graph LR
+    subgraph L1["従来hooks（PreToolUse / PostToolUseなど）"]
+        direction TB
+        A1[Claude Code] -->|"exec起動 + stdin: JSON"| A2[外部プロセス<br/>hookコマンド]
+        A2 -->|"stdout / exit code<br/>許可・拒否・加工結果"| A1
+        A2 -.->|"毎回使い捨て"| A3[プロセス終了]
+    end
+
+    subgraph L2["Function Hooks"]
+        direction TB
+        B1[Claude Codeエンジン] -->|"$, e, next を渡す"| B2["Mod<br/>registerハンドラ"]
+        B2 -->|"画面描画・状態管理<br/>ツール登録を直接実行"| B2
+        B2 -->|"next(e)"| B1
+    end

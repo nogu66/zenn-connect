@@ -1,0 +1,4 @@
+graph TD
+    B1["Claude Codeエンジン"] -->|"$, e, next を渡す"| B2["Mod（registerハンドラ）"]
+    B2 -->|"画面描画・状態管理・ツール登録を直接実行"| B2
+    B2 -->|"next(e)"| B1
