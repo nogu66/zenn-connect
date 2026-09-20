@@ -604,6 +604,10 @@ Claude Modsは、**「外部プロセスを挟まずにClaude Code自身を拡�
 
 **このことからも、Claude Modsは、Claude Codeハーネス自体をかなり深くカスタマイズすることができる機能であり、かなり将来性の高い機能であると言えます。**
 
+また、この記事の内容はスキル化しているので、すぐに試したい方はこちらからどうぞ
+
+https://github.com/nogu66/claude-code/tree/main/create-mods
+
 ---
 
 この記事が役に立ったら、Xをフォローしていただけると嬉しいです!
