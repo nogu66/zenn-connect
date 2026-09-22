@@ -370,6 +370,11 @@ managedな端末やTeam/Enterpriseの組織では、最も外側の`prepend`に�
 
 ### terminal-browser：ターミナル内でブラウザを開く
 
+:::message
+**追記(2026/9/22)**
+v2.1.278 時点において、Claude Codeの特殊文字列バグが発生しているため正常に動作しないことを確認
+:::
+
 [terminal-browser](https://github.com/zenbu-labs/terminal-browser/tree/main/claude-code-plugin)は、Kitty graphics protocolを使い、Claude Codeの分割ペインの中に実際のブラウザを表示するコミュニティ製のModです。`/browser`コマンドで起動できます（Ghostty、Kitty、libghosttyベースのターミナルに対応）。
 
 https://github.com/zenbu-labs/terminal-browser/tree/main/claude-code-plugin
