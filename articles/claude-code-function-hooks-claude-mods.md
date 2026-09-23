@@ -625,4 +625,4 @@ https://x.com/_nogu66
 - [cc-arcade（実例プラグイン）](https://github.com/sezaakgun/cc-arcade)
 - [Claude Code 公式 Mods](https://github.com/anthropics/claude-code/tree/main/mods)
 - [awesome-claude-code-mods](https://github.com/karanb192/awesome-claude-code-mods)
-- [erminal-browser](https://github.com/zenbu-labs/terminal-browser/tree/main/claude-code-plugin)
+- [terminal-browser](https://github.com/zenbu-labs/terminal-browser/tree/main/claude-code-plugin)
