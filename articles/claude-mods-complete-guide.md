@@ -3,12 +3,14 @@ title: "完全版 Claude Mods 入門 | Claude Codeを自由にカスタマイズ
 emoji: "🪝"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["claude", "claudecode", "ai", "plugin","hooks"]
-published: false
+published: true
 ---
 
 noguです。
 
 2026年10月1日、Claude Codeの**Claude Mods**が正式に発表されました。
+
+https://x.com/ClaudeDevs/status/2105721434807083061?s=20
 
 これは、TypeScriptの関数を用いて、Claude Codeの機能や見た目を自由かつ安全にカスタマイズできる拡張機能の仕組みです。個人的に、この機能は**かなり将来性の高い機能**だと感じています。
 
@@ -39,6 +41,8 @@ https://claude.com/blog/claude-code-mods
 ## Claude Modsとは
 
 Claude Mods（以下、Mod）とは、Claude Codeの機能や見た目をカスタマイズできる、プラグインの仕組みです。
+
+**特徴として、CLIだけではなく、デスクトップアプリのカスタマイズもすることが可能です。**
 
 これまでもClaude Codeには「Hooks」という拡張の仕組みがあり、ツール実行の前後などのタイミングで、自分で用意したコマンドを実行できました。Modはその発展形です。
 
@@ -434,86 +438,9 @@ https://x.com/RobKnight__/status/2100622380439683541?s=20
 
 `diff`や`agents-md`のような公式の標準機能も、terminal-browserのようなコミュニティ製Modも、同じ`register`とイベントへのフックで作られています。「画面を描く」「指示の読み込み方を変える」「組織のルールを守る」「ブラウザを埋め込む」と、方向性はばらばらでも、書き方は変わりません。
 
-## 実践：小さなmodを作る（cc-arcadeの7イベントで読む）
-
-[cc-arcade](https://github.com/sezaakgun/cc-arcade)は、Function Hooksを使った実例プラグインです。プロンプト欄の上でSnakeやTetris、Doomなどのゲームを遊べる、7つのイベントだけで作られたModです。ファイル構成は次の通りです。
-
-```
-cc-arcade/
-├── .claude-plugin/
-│   └── plugin.json
-└── hooks/
-    ├── hooks.json
-    ├── register.tsx
-    ├── boards/*.tsx
-    └── games/*.ts
-```
-
-### 登録されている7イベント一覧
-
-```ts
-on('session.start', ...)
-on('command.run', {command: 'arcade'}, ...)
-on('turn.start', ...)
-on('turn.complete', ...)
-on('tool.call', ...)
-on('ui.message', ...)
-on('ui.render', {component: 'AbovePrompt'}, ...)
-```
-
-### next()の実装パターン（turn.complete / tool.call）
-
-cc-arcadeの`turn.complete`は、「横から観測するだけ」のパターンです。
-
-```ts
-on('turn.complete', async ($, e, next) => {
-  const r = await next(e)        // 本来の処理（他プラグイン→本体）を先に完了させる
-  turnStartedAt = undefined
-  if (active && active !== PICKER) {
-    turnsDone++                   // 自分のカウンタを増やす
-    $.ui.invalidate('ui.render')  // 「画面を再描画して」と要求
-  }
-  return r                        // 元の結果をそのまま返す
-})
-```
-
-`next(e)`を先に呼んで本来の処理を素通りさせ、その後で自分のカウンタを更新し、画面の再描画だけ要求しています。結果自体には手を加えず、そのまま返しているのがポイントです。
-
-`tool.call`の方は、「ツールが呼ばれるたびに横取りして観測する」パターンです。
-
-```ts
-on('tool.call', async ($, e, next) => {
-  const r = await next(e)   // 実際のツール実行は素通りさせる（邪魔しない）
-  const event = petEvent(e.tool, command, isError)  // Bashコマンド文字列とエラー有無だけ見る
-  // ...ペットの状態を更新する処理が続く
-})
-```
-
-こちらも`next(e)`を先に呼んで実際のツール実行を邪魔せず、その結果（成功/失敗）だけを見てペットの状態を更新しています。どちらも「本来の処理を止めずに、横から観測する」という同じ設計です。
-
-### 描画は別スレッド（Client）という設計判断
-
-- ゲームは毎秒10回（Doomは20回）の描画更新が必要 → メインのフック処理と分離
-
-直感的には、`ui.render`のハンドラの中にゲームロジックまで全部書きたくなります。しかしそれをやると、毎秒10回の再計算がメインのフック処理チェーンに乗ってしまい、他のModの処理まで巻き込んで重くなります。
-
-そこでcc-arcadeは、各ゲーム盤（`boards/snake.tsx`など）を`register.tsx`本体とは別の実行コンテキスト（`Client`モジュール）として切り出す設計を選んでいます。
-
-- 独自のフレームクロック（`surface.every(100, () => {...})`で100ms毎に1ティック進める）
-- 独自のキーボード処理（`surface.onKey(...)`）
-- 完了したら`surface.post({game: 'snake', score: ...})`で親に送信（＝`ui.message`イベントとして受信）
-
-実質「メインプロセスとワーカーの分離」です。ゲームループが重くなってもClaude Code自体は固まりません。ゲームのロジック（`games/snake.ts`）自体もUIと無関係な純粋関数として書かれていて、描画（`boards/snake.tsx`）はその`step()`を100msごとに呼ぶだけです。ロジックと描画を分けているぶん、テストもしやすくなっています。
-
-## 動かしてみる
-
-1. `git clone https://github.com/sezaakgun/cc-arcade && cd cc-arcade`
-2. `claude --plugin-dir .` で1セッションだけ試す
-3. `/arcade` を実行
-
 ## 実践：自分のModを作って配る（turn-counter）
 
-ここからは、自分でModを作ります。題材は、セッションのターン数をプロンプト欄の上に表示する小さなMod「turn-counter」です。状態管理、型定義の確認、検証、テスト、配布までを順に進めます。**この章のコードは、すべてClaude Code 2.1.287で動作を確認しています。**
+ここからは、自分でModを作ります。題材は、セッションのターン数をプロンプト欄の上に表示する小さなMod「turn-counter」です。状態管理から始めて、型定義の確認、検証、テスト、配布の順に進めます。**この章のコードは、すべてClaude Code 2.1.287で動作を確認しています。**
 
 ```
 my-mods/
@@ -533,11 +460,11 @@ my-mods/
 
 ### 状態は`$.state`に置く
 
-最初に決めるのは、ターン数をどこに持つかです。
+まず、ターン数をどこに持つかを決めます。
 
-Modのファイルを保存すると、ホットリロードで`register()`が実行し直されます。このとき、モジュール変数は初期値に戻ります。前の章で読んだcc-arcadeのように、カウンタをモジュール変数に持つ書き方では、保存のたびに値が消えてしまいます。
+Modのファイルを保存すると、ホットリロードで`register()`が実行し直されます。このとき、モジュール変数は初期値に戻ります。カウンタをモジュール変数に持つ書き方では、保存のたびに値が消えてしまいます。
 
-`$.state`は、この問題を解決します。値をModのファイルではなくホスト側に置くため、ホットリロードを越えて残ります。
+`$.state`は、この問題を解決します。値をModのファイルではなくホスト側に置くので、ホットリロードのあとも値が残ります。
 
 ```js:hooks/register.mjs
 // ホスト側に置く値。このファイルがホットリロードされても消えない
@@ -562,10 +489,9 @@ export function register(on) {
 }
 ```
 
-ポイントは2つあります。
+`ui.render`の中で`$.state.get`を呼ぶと、その描画が値を購読します。あとで値が`$.state.set`で書き換わると、その描画は自動で描き直されます。再描画が自動になるので、`$.ui.invalidate('ui.render')`を呼ぶ必要はありません。
 
-- **再描画が自動になる**：`ui.render`の中で`$.state.get`を呼ぶと、その描画が値を購読します。あとで`$.state.set`されると、自動で描き直されます。`$.ui.invalidate('ui.render')`を呼ぶ必要はありません
-- **書けるのは持ち主だけ**：どのModも値を読めますが、書けるのは持ち主のModだけです。また、`ui.render`の描画中には`$.state.set`を呼べません。書き込みは、ほかのイベントやボタンの`onPress`から行います
+どのModも値を読めますが、書けるのは持ち主のModだけです。また、`ui.render`の描画中には`$.state.set`を呼べません。書き込みは、ほかのイベントやボタンの`onPress`から行います。
 
 `$.state`の値は、型の「契約」として宣言する必要があります。契約ファイルの場所は、`plugin.json`の`types`で指定します。
 
@@ -608,7 +534,7 @@ declare module "claude-code" {
 | 再描画 | 描画中の`get`が自動で購読する | しない |
 | 型の宣言 | `PluginState`に必要 | 不要 |
 
-画面に出す値は`$.state`、次回の起動でも使いたい値は`$.store`、と覚えておけば十分です。
+画面に出す値は`$.state`、次回の起動でも使いたい値は`$.store`と覚えておけば十分です。
 
 ### 起動して、型定義を確認する
 
@@ -623,7 +549,7 @@ claude --plugin-dir ./turn-counter
 次に、起動したまま`register.mjs`の「このセッション」を「ここまで」に書き換えて保存します。トランスクリプトに`turn-counter: reloaded (2 hooks: turn.complete, ui.render)`と出て、表示が「ここまで 1 ターン目」に変わります。コードは入れ替わりましたが、数字は`$.state`にあるので消えていません。
 
 :::message
-表示が出ないときは、起動したフォルダを信頼しているかを確認します。信頼していないフォルダでは、Modはエラーも出さずに読み込まれません。`claude --debug-file debug.log`で起動すると、ログに`hooks module turn-counter@inline loaded`と出ているかで判断できます。
+表示が出ないときは、起動したフォルダを信頼しているかを確認します。信頼していないフォルダでは、Modはエラーも出さずに読み込まれません。読み込まれたかどうかは、`claude --debug-file debug.log`で起動し、ログに`hooks module turn-counter@inline loaded`と出ているかで判断できます。
 :::
 
 Claude Codeは、Modを読み込むたびに、そのModの`.claude-plugin/types/`へ型定義を書き出します。起動したあとには、次のファイルができています。
@@ -644,7 +570,7 @@ turn-counter/
 
 ### `claude plugin validate`で検証する
 
-`claude plugin validate`は、Modのソースを静的に読んで検証します。どのイベントにフックし、`$`の何を呼び、どの状態を読み書きするのかを、一覧で報告します。
+`claude plugin validate`は、Modのソースを静的に読んで検証します。報告されるのは、どのイベントにフックし、`$`の何を呼び、どの状態を読み書きするかの一覧です。
 
 ```bash
 $ claude plugin validate ./turn-counter
@@ -698,15 +624,15 @@ tests/turn-counter.test.ts:
 
 テストの中の`$`は、エンジン側の`$`です。`$.turn.complete(...)`でイベントを起こし、`$.ui.mount(...)`でModに描画させ、返ってきた`ui`から要素を探します。ボタンを押す`ui.press`や、入力する`ui.input`もあります。
 
-テスト内で`on(...)`に登録したフックは、Modより内側（coreの位置）で動きます。Claude Code本体の代わりに答えを返す、スタブの役割です。
+テスト内で`on(...)`に登録したフックは、Modより内側（coreの位置）で動きます。このフックは、Claude Code本体の代わりに答えを返すスタブです。
 
 :::message alert
-テスト内で`next(e)`まで流れるイベントには、答えるスタブが必要です。私は最初、ターン数が0のまま`$.ui.mount`を呼びました。Modは0のとき`next(e)`へ流すため、`ui.render`に答える相手がおらず、`no implementation for ui.render`で失敗しました。上の例は、先に1ターン進めてから描画しています。
+Modが`next(e)`を呼ぶイベントには、テスト内に答えるスタブが必要です。私は最初、ターン数が0のまま`$.ui.mount`を呼びました。Modはターン数が0のとき`next(e)`を呼ぶため、`ui.render`に答える相手がおらず、`no implementation for ui.render`で失敗しました。上の例では、先に1ターン進めてから描画しています。
 :::
 
 ### marketplaceで配布する
 
-Modはプラグインの一部なので、配布もプラグインと同じ仕組みを使います。リポジトリのルートに、marketplaceのマニフェストを置きます。
+Modはプラグインの一部なので、配布にもプラグインと同じ仕組みを使います。リポジトリのルートに、marketplaceのマニフェストを置きます。
 
 ```json:.claude-plugin/marketplace.json
 {
@@ -727,7 +653,7 @@ GitHubに公開したあと、使う側は次の3つのコマンドで導入し�
 /reload-plugins
 ```
 
-さらに広く配りたい場合は、[Claude directory](https://claude.ai/directory)に提出できます。公式ブログによると、Modを含むプラグインは、Claude directoryか、CLIの`/plugin`から導入できます。
+さらに広く配りたい場合は、[Claude directory](https://claude.ai/directory)に提出できます。公式ブログによると、Modを含むプラグインはClaude directoryかCLIの`/plugin`から導入できます。
 
 :::message
 この節では、マニフェストの検証までを手元で確認しました。導入の3コマンドは、公式ガイドの記載です。
@@ -737,9 +663,11 @@ GitHubに公開したあと、使う側は次の3つのコマンドで導入し�
 
 Modは、ターミナルとデスクトップアプリの両方を対象にできます。
 
-描画の書き方は、どちらでも同じです。`ui.render`のイベントには`e.surface`が入っていて、`$.ui.resolve(e)`がその画面用の`Box`や`Text`を返します。同じハンドラが、そのまま両方の画面で動きます。画面ごとに出し分けたいときは、`e.surface`で分岐します。
+描画の書き方は、どちらでも同じです。`ui.render`のイベントには`e.surface`が入っていて、`$.ui.resolve(e)`がその画面用の`Box`や`Text`を返します。そのため、同じハンドラがそのまま両方の画面で動きます。画面ごとに出し分けたいときは、`e.surface`で分岐します。
 
-テストでも、`$.ui.mount`の`surface`を変えれば、画面ごとの挙動を確認できます。型定義には`terminal`と`desktop`に加えて、`mobile`と`vscode`も定義されています。
+テストでも、`$.ui.mount`の`surface`を変えれば、画面ごとの挙動を確認できます。
+
+型定義には、`terminal`と`desktop`のほかに`mobile`と`vscode`もあります。
 
 `ui.render`の`component`に指定できる場所は、2.1.287時点で次の15種類です。
 
