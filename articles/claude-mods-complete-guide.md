@@ -163,38 +163,36 @@ export function register(on) {
 | 引数 | 役割 |
 |---|---|
 | `$` | エンジンとの唯一の接続窓口。画面描画・モデル・ストレージ・タイマー・ツール登録など、外の世界に触れる手段はすべて`$`経由。`$`のメソッドは、それ自体がイベントでもある |
-| `e` | そのイベントの入力データ。フラットな値で、idは固定（pinned）、それ以外のペイロードは自由に書き換えてよい |
+| `e` | そのイベントの入力データ。フラットな値で、凍結されている。書き換えるときは、コピーを`next`に渡す。idは固定（pinned）で書き換えられない |
 | `next` | 次の処理へ進む関数 |
 
-Modは隔離環境で動くため、`$`を使わない限り、外の世界には何もできません。これが安全性の要です。
+Modが外の世界に触れる手段は、`$`だけです。そのため、Modが何をするのかは、読み込む前に`claude plugin validate`で一覧できます。
 
 :::message alert
-隔離されているのは実行環境です。`$`を通せば、ファイルもコマンドも扱えます。公式ガイドも「ModはClaude Codeと同じアクセス権で動くコードで、書いたのはAnthropicではなく公開者」と注意しています。信頼できる提供元のModだけを入れ、導入前にリポジトリを確認しましょう。
+Modはサンドボックス化されていません（公式も「Mods aren't sandboxed」と明記しています）。`$`を通せば、ファイルもコマンドもネットワークも、あなたと同じ権限で扱えます。公式ガイドも「ModはClaude Codeと同じアクセス権で動くコードで、書いたのはAnthropicではなく公開者」と注意しています。信頼できる提供元のModだけを入れ、導入前にリポジトリを確認しましょう。
 :::
 
-具体例として、公式チートシートの「THE HOOK」を見てみましょう。`tool.call`で`rm -rf /`を拒否し、結果を加工して返す、基本形のすべてが入っています。
+具体例として、基本形のすべてが入ったフックを見てみましょう。`tool.call`で`rm -rf /`を拒否し、入力を書き換え、実行後に通知を出します。
 
 ```ts
 export function register(on) {
   on("tool.call", { tool: "Bash" }, async ($, e, next) => {
     if (e.command.includes("rm -rf /")) return { deny: "no" }
-    const r = await next(e)               // 自分より内側の全フック→core
-    return { ...r, text: redact(r.text) } // 上りで結果を加工
+    const r = await next({ ...e, command: e.command.trim() }) // 下りで入力を書き換え
+    $.ui.toast("Bash ran")                                    // 上りで結果を観測
+    return r
   })
-  .catch(($, e, next) =>                  // 例外 or タイムアウト時
+  .catch(($, e, next) =>                                      // 例外 or タイムアウト時
     next.called ? next(e) : { deny: next.error.kind })
 }
 ```
 
-:::message
-`redact`は、機密情報をマスクする自前の関数のつもりで置かれています。
-:::
-
 - `{ tool: "Bash" }`のマッチャーで、Bashの`tool.call`だけを拾います
 - `e.command`から、呼ばれようとしているコマンドを読み取れます
 - 危険だと判断したら`{ deny: "no" }`を**返して**拒否します。`deny`は`$`のメソッドではなく戻り値です。このとき`next(e)`を呼んでいないので、後続のハンドラには処理が渡りません
-- 問題がなければ`await next(e)`で、自分より内側のすべてのフックと、最終的にClaude Code本体（core）の処理を実行し、その結果を受け取ります
-- `{ ...r, text: redact(r.text) }`のように、結果を加工してから返せます
+- 問題がなければ`await next(...)`で、自分より内側のすべてのフックと、最終的にClaude Code本体（core）の処理を実行し、その結果を受け取ります
+- `next({ ...e, command: e.command.trim() })`のように`e`のコピーを渡すと、内側に届く入力を書き換えられます
+- `next`から戻ったあとは、結果を見て後処理ができます。ここでは`$.ui.toast`で通知を出し、結果はそのまま返しています
 - `.catch`は、ハンドラが例外を投げたり、タイムアウトしたときの後始末です。`next.called`で、すでに`next`を呼んだかどうかを判定できます
 
 **すべてのイベント、APIリファレンスは末尾のAppendixに記載しています。**
@@ -225,11 +223,15 @@ on('tool.call', async ($, e, next) => {
 ```ts
 on('tool.call', { tool: 'Read' }, async ($, e, next) => {
   const r = await next(e)
-  return { ...r, text: r.text.replace(/sk-[a-zA-Z0-9]+/g, '[REDACTED]') }
+  if (r.deny || r.isError || r.result.type !== 'text') return r
+  const content = r.result.file.content.replace(/sk-[a-zA-Z0-9]+/g, '[REDACTED]')
+  return { result: { ...r.result, file: { ...r.result.file, content } } }
 })
 ```
 
 後続の処理が返した結果をそのまま返さず、加工してから返すこともできます。**ここでは`Read`ツールの出力に混じったAPIキーらしき文字列をマスクしています。**
+
+書き換えるのは`result`です。`next(e)`の戻り値には`text`もありますが、これは「モデルが読んだ文字列」の控えです。`{ ...r, text: ... }`のように差し替えても、モデルに届く内容は変わりません。
 
 ### next のその他の機能
 
@@ -240,10 +242,10 @@ on('tool.call', { tool: 'Read' }, async ($, e, next) => {
 | `next(e)` | 自分より内側の全フック→coreを実行し、結果を返す |
 | `next`を呼ばずにreturn | coreの代わりに自分で答える。`tool.call`なら`{ deny }`、または独自の結果 |
 | `next.trace` | await後に参照する。内側の各リンクのplugin / tier / e / result / outcome |
-| `next.origin` | 呼び出し元の`{ plugin, tier }`。エンジンが投げた場合は`{ engine, core }` |
+| `next.origin` | 呼び出し元の`{ plugin, tier }`。エンジンが投げた場合は`{ plugin: "engine", tier: "core" }` |
 | `next.event` | globや`*`のフック内で、実際にディスパッチされたイベント名 |
 | `next.is("tool.*", e)` | 型述語。`e`（と結果）を、マッチするイベントに絞り込む |
-| `next.to(e, "builtin")` | managed限定。より下位のtierで継続する（絞り込みのみ可） |
+| `next.to(e, "append")` | 組織のMod限定（`prependPlugins` / `appendPlugins`）。間の層を飛ばして、より内側のtier（`append` / `builtin` / `core`）で継続する |
 | `next(e); next(e)` | 0回以上呼べる。呼ぶたびに、内側で新しいディスパッチが発生する |
 | `next.error` / `next.called` | `.catch`内で使う。`{ kind, message, budget }`と、すでにディスパッチしたかどうか。`next(e)`で再実行できる |
 | `next.signal` | `AbortSignal`。ユーザーが中断した、または自分の持ち時間が尽きたことを検知する |
@@ -251,7 +253,9 @@ on('tool.call', { tool: 'Read' }, async ($, e, next) => {
 
 `.catch`は、ハンドラが例外を投げたり、10秒を超えたときのための宣言です。宣言していなければ、そのハンドラは1行の薄い表示とともにスキップされます。宣言していれば、猶予予算の中で、`next`と同等の権限で代わりに答えられます。
 
-10秒は、ハンドラ自身のコードが動いた時間だけを数えます。`next(e)`や`$`の呼び出しを待つ時間は含みません（`$.clock`の待ちは除く）。1分かかる`$.model.complete`を呼んでも、持ち時間は減りません。`.catch`の猶予は1秒です。
+スキップされたハンドラは「いなかった」扱いになり、処理はそのまま内側へ進みます。危険なコマンドを止めるためのハンドラは、`.catch`で`{ deny }`を返すようにしておかないと、失敗したときにコマンドが通ってしまいます。
+
+10秒は、ハンドラ自身のコードが動いた時間だけを数えます。`next(e)`や`$`の呼び出しを待つ時間は含みません。1分かかる`$.model.complete`を呼んでも、持ち時間は減りません。例外は`$.clock.sleep`で、この待ち時間は数えられます。自分で作ったPromiseを待つ時間も同じです。`.catch`の猶予は1秒です。
 
 ## 5層のチェーン構造と権限
 
@@ -267,25 +271,23 @@ Function Hooksは、1つのイベントに複数のModが同時にフックし�
 
 1つのイベントは、この5層を貫通する1本の「**fold**」（関数型用語のinject/reduceに由来する、元提案者の表現）として流れます。
 
-- **下り**：`e`（入力データ）は各層を通過するたびに加工されうる。製品（core）に届く直前が`append`
+- **下り**：`e`（入力データ）は各層を通過するたびに加工されうる。組織の層のうち、最後に`e`を見るのが`append`（その内側は、同梱の`builtin`と`core`だけ）
 - **core**：Claude Codeのエンジン本体がデフォルトの処理を行う
-- **上り**：結果は各層を戻るたびに加工されうる。エンジンに実行される直前が`prepend`
+- **上り**：結果は各層を戻るたびに加工されうる。最後に結果を見るのが`prepend`
 
 組織はこのチェーンの両端、つまり`prepend`と`append`を押さえています。真ん中にいる`user`（自分がインストールしたMod）は、この2つに挟まれる形です。
 
-たとえば`user`のModがあるツール呼び出しを許可しても、外側の`append`にいる組織のModが後からそれを拒否できます。逆に`prepend`の組織ポリシーが先に拒否すれば、そもそも`user`のModにはイベントが届きません。個人のModが組織のルールを一方的に上書きできないよう、外側を組織で挟んでいるわけです。
+たとえば`user`のModがあるツール呼び出しをそのまま通しても、その内側の`append`にいる組織のModが、coreに届く前に拒否できます。逆に`prepend`の組織ポリシーが先に拒否すれば、そもそも`user`のModにはイベントが届きません。個人のModが組織のルールを一方的に上書きできないよう、両側を組織で挟んでいるわけです。
 
-何もフックを足さなければ、実質的には次の1行と同じ意味になります。
+組織のModは、`next.to`で`user`の層を飛ばすこともできます。
 
 ```javascript
-on("*", ($, e, next) => next.to(e, "builtin"))
+on("*", ($, e, next) => next.to(e, "append"))
 ```
 
-「すべてのイベント（`*`）を受け取ったら、`user`や`append`の層では何もせず、次の層である`builtin`にそのまま渡す（`next.to(e, "builtin")`）」という宣言です。
+`prepend`に置いたこの1行は、「すべてのイベント（`*`）を、`user`の層を飛ばして`append`へ渡す」という意味です。`next.to`を呼べるのは、`prependPlugins`か`appendPlugins`に並べた組織のModだけです。個人のModが、組織の層を飛ばすことはできません。
 
-**つまり「出荷時のまま」の状態を1行で表しています。ここに自分のハンドラを足していくのがModを書くということです。**
-
-具体例として、Claude Codeが公式に提供する`sec-default`は、組織側がこの構造を使ってあらかじめ用意した防御用のModです。
+具体例として、Claude Codeが公式に提供する`sec-default`は、この`next.to(e, "append")`を使って組織の持ち物を守る、防御用のModです。Claude Codeに同梱されています。
 
 https://github.com/anthropics/claude-code/tree/main/mods/sec-default
 
@@ -296,6 +298,7 @@ managedな端末、またはTeam/Enterpriseプランの場合、`sec-default`は
 - プロンプトのシステムセクション
 - 組織の設定
 - 組織提供ツールの説明文
+- 設定の`deny`ルール（個人のModが`allow`を返しても、拒否のまま）
 
 なお、組織が`prependPlugins`という設定を使えば、`prepend`という枠自体を組織側で管理できるため、`sec-default`をそこに含めるかどうかも組織が選べます。
 
@@ -379,7 +382,7 @@ https://github.com/anthropics/claude-code/tree/main/mods/agents-md
 | `claude-md-and-agents-md` | 両方を読む |
 | `managed-only` | 組織管理の指示ファイルのみを使う |
 
-設定は、`pluginConfigs`に書きます。
+組み込みのModなので、`/config`の「Project instructions」から切り替えられます。手で書く場合は、`pluginConfigs`に設定します。
 
 ```json
 {
@@ -391,7 +394,7 @@ https://github.com/anthropics/claude-code/tree/main/mods/agents-md
 }
 ```
 
-READMEによると、`session.start`でモードをログに出し、`tool.call`（Read）でディレクトリ内の`AGENTS.md`を動的に添付しています。ハーネスの標準的な挙動を、イベントへのフックだけで差し替えている例です。
+READMEによると、中心は`prompt.context`へのフックです。エンジンが読み込んだ指示ファイルの一覧を受け取り、`$.fs.ancestors`で見つけた`AGENTS.md`を、プロジェクトの指示ファイルとして足して返します。サブディレクトリの`AGENTS.md`は、`tool.call`（Read）で動的に添付しています。ハーネスの標準的な挙動を、イベントへのフックだけで差し替えている例です。
 
 https://x.com/trq212/status/2101009393731223817
 
@@ -491,6 +494,8 @@ export function register(on) {
 
 `ui.render`の中で`$.state.get`を呼ぶと、その描画が値を購読します。あとで値が`$.state.set`で書き換わると、その描画は自動で描き直されます。再描画が自動になるので、`$.ui.invalidate('ui.render')`を呼ぶ必要はありません。
 
+プロンプト欄の上の帯（`AbovePrompt`）は、すべてのModで共有しています。ツリーを返すと、自分より内側のModが描いた内容を置き換えます。残したいときは、`await next(e)`の結果を`Box`の子に入れます。
+
 どのModも値を読めますが、書けるのは持ち主のModだけです。また、`ui.render`の描画中には`$.state.set`を呼べません。書き込みは、ほかのイベントやボタンの`onPress`から行います。
 
 `$.state`の値は、型の「契約」として宣言する必要があります。契約ファイルの場所は、`plugin.json`の`types`で指定します。
@@ -529,7 +534,7 @@ declare module "claude-code" {
 
 | | `$.state` | `$.store` |
 |---|---|---|
-| 寿命 | セッションの間 | セッションをまたいで永続化 |
+| 寿命 | セッションの間（`/clear`、`/resume`、`/branch`で初期値に戻る） | セッションをまたいで永続化（マシン上の全セッションで共有） |
 | ホットリロード | 残る | 残る |
 | 再描画 | 描画中の`get`が自動で購読する | しない |
 | 型の宣言 | `PluginState`に必要 | 不要 |
@@ -549,7 +554,7 @@ claude --plugin-dir ./turn-counter
 次に、起動したまま`register.mjs`の「このセッション」を「ここまで」に書き換えて保存します。トランスクリプトに`turn-counter: reloaded (2 hooks: turn.complete, ui.render)`と出て、表示が「ここまで 1 ターン目」に変わります。コードは入れ替わりましたが、数字は`$.state`にあるので消えていません。
 
 :::message
-表示が出ないときは、起動したフォルダを信頼しているかを確認します。信頼していないフォルダでは、Modはエラーも出さずに読み込まれません。読み込まれたかどうかは、`claude --debug-file debug.log`で起動し、ログに`hooks module turn-counter@inline loaded`と出ているかで判断できます。
+表示が出ないときは、起動したフォルダを信頼しているかを確認します。信頼していないフォルダでは、Modはエラーも出さずに読み込まれません。読み込まれたかどうかは、`/plugin`を開くと`1 mod active · turn-counter`のように表示されます。詳しく調べるときは、`claude --debug-file debug.log`で起動し、ログに`hooks module turn-counter@inline loaded`と出ているかで判断できます。
 :::
 
 Claude Codeは、Modを読み込むたびに、そのModの`.claude-plugin/types/`へ型定義を書き出します。起動したあとには、次のファイルができています。
@@ -586,7 +591,7 @@ Modが何に触るのかを、セッションで読み込む前に一覧でき�
 
 ### `claude plugin test`でテストする
 
-`claude plugin test`は、Modを本物のClaude Codeのランタイムに読み込んでテストします。テストは`tests/`に置き、`claude-code/testing`から`test`と`expect`を読み込みます。
+`claude plugin test`は、Modを本物のClaude Codeのランタイムに読み込んでテストします。テストは、名前が`.test.ts`で終わるファイルに書きます（ここでは`tests/`に置きます）。`claude-code/testing`から`test`と`expect`を読み込みます。
 
 ```ts:tests/turn-counter.test.ts
 import { expect, test } from "claude-code/testing"
@@ -667,7 +672,7 @@ Modは、ターミナルとデスクトップアプリの両方を対象にで�
 
 テストでも、`$.ui.mount`の`surface`を変えれば、画面ごとの挙動を確認できます。
 
-型定義には、`terminal`と`desktop`のほかに`mobile`と`vscode`もあります。
+型定義には`mobile`と`vscode`もありますが、公式ドキュメントによると、Modの描画が表示されるのはターミナルとデスクトップアプリ（Codeタブ）だけです。VS Code拡張のチャットパネルや`claude -p`では、フックは動きますが、描画は出ません。
 
 `ui.render`の`component`に指定できる場所は、2.1.287時点で次の15種類です。
 
@@ -714,15 +719,15 @@ InfoNotice / SessionMode / PromptHint / AbovePrompt / Pane
 | `$.fs` | `.read` / `.write` / `.list` | ホストのファイルシステムを操作する（プロセスと同じ到達範囲） |
 | | `.stat` / `.exists` | 種類/サイズ/mtimeを見る ／ 例外を投げずに存在確認する |
 | | `.ancestors` | cwdより上位にある指示ファイル（named instruction files）を得る |
-| `$.state` | `.get` / `.set` | セッション中の名前付きの値。ホットリロードを越えて残り、描画中の`get`は再描画を購読する |
-| `$.store` | `.get` / `.set` / `.delete` / `.keys` | プラグイン単位で永続化されるJSONを操作する |
+| `$.state` | `.get` / `.set` | セッション中の名前付きの値。ホットリロードを越えて残り、描画中の`get`は再描画を購読する。`/clear`などで初期値に戻る |
+| `$.store` | `.get` / `.set` / `.delete` / `.keys` | プラグイン単位で永続化されるJSONを操作する。マシン上の全セッションで共有される |
 
 ### http / process / mcp 系
 
 | 名詞 | 動詞 | 説明 |
 |---|---|---|
 | `$.http` | `.fetch` | ホスト経由でfetchする。`{ auth }`でauthorizeハンドルを消費できる |
-| `$.process` | `.run` | ホスト上でargvを実行する（シェルなし）。stdout/stderr/codeを受け取る |
+| `$.process` | `.run` | ホスト上でargvを実行する（シェルなし）。`{ exitCode, stdout, stderr }`を受け取る |
 | | `.spawn` | コマンドを起動し、出力をストリームで受け取る |
 | `$.mcp` | `.call` | 接続済みMCPサーバー上のツールを呼ぶ |
 | | `.connect` | 自分のマニフェストに書いたMCPサーバーへ接続する |
@@ -756,7 +761,7 @@ InfoNotice / SessionMode / PromptHint / AbovePrompt / Pane
 | `$.env` | `.get` / `.set` | 変数名をリテラルで指定して、1つ取得/設定する（`validate`が読み書き対象を列挙する） |
 | `$.clock` | `.now` / `.sleep` / `.after` / `.every` | 時刻とタイマー（キャンセル可） |
 | `$.audio` | `.play` / `.speak` | クリップの再生 ／ プラットフォームの音声合成 |
-| `$.telemetry` | `.log` / `.mark` | テレメトリの記録（公式の`telemetry`Modが追加する名詞） |
+| `$.telemetry` | `.log` / `.mark` | テレメトリの記録（公式の`telemetry`Modが追加する名詞）。使えるのはClaude Code本体と同梱Modだけで、インストールしたModからの呼び出しは拒否される |
 | `$.plugin` | `.name` / `.root` | 自分が誰で、どこにいるか |
 
 ## 全イベント（カテゴリ別）
@@ -779,7 +784,7 @@ InfoNotice / SessionMode / PromptHint / AbovePrompt / Pane
 
 | | イベント | 説明 |
 |---|---|---|
-| ◆ | `prompt.submit` | 入力されたプロンプト。coreがターンを実行 → `{ text, context[] }` |
+| ◆ | `prompt.submit` | 送信されたプロンプト（ターン開始前）。`next({ ...e, text })`で書き換え、`{ drop }`で送信を止められる → `{ text, context[] }` |
 | ◆ | `prompt.fill` / `prompt.suggest` | 欄への書き込み ／ ターン後の薄字提案。書き換え・拒否可 |
 | ◇ | `prompt.context` | 会話の最初のユーザーメッセージに載るcontextブロック。会話ごとに1回 → `{ blocks }` |
 | ◆ | `prompt.edit` | 入力欄が編集・貼り付けされた。戻り値の`decorations`で、入力中の文字に色や太字を付けられる |
@@ -789,15 +794,15 @@ InfoNotice / SessionMode / PromptHint / AbovePrompt / Pane
 | ◇ | `turn.start` | `{ turnId, text }`・ターン開始前 |
 | ◆ | `turn.step` | モデルへの1リクエスト（ストリーミング）。`async function*`で書き、`yield* next({ ...e, model, effort })` |
 | ◇ | `turn.complete` | `{ text }`・usage・ターン終了後 |
-| ◇ | `session.start` | `{ cwd, ... }`・セッションにつき1回 |
+| ◇ | `session.start` | `{ cwd, ... }`・Modごとに、最初のプロンプトの前に1回。そのModがリロードされるたびにもう1回（`/clear`の後には来ない） |
 | ◇ | `session.receive` | 受信データがcontextに入る前 → `{ text }` \| `{ consumed }` |
 | ◆ | `session.compact` | `{ trigger, instructions?, messages }` → `{ messages }` \| `{ skip }` |
 | ◇ | `session.attach` / `session.detach` | surface（デスクトップ・スマホ）の接続/切断：`{ surface, clientId }` |
 | ◆ | `session.append` | 会話に行が保存される前。内容を書き換えられる |
 | ◆ | `session.send` | ほかのエージェントやセッションへメッセージを送る前。書き換え・宛先変更・拒否ができる |
 | ◇ | `session.measure` | コンテキスト使用率やレート制限が動いたときの通知。ポーリングせずに監視できる |
-| ◆ | `session.end` | セッション終了時に1回。`e.reason`で理由がわかる |
-| ◆ | `agent.spawn` | `{ prompt, model, provider, parentAgentId?, ... }` → `{ text }` |
+| ◆ | `session.end` | セッション終了時と、`/clear`・`/resume`・`/branch`の実行時。`e.reason`で理由がわかる |
+| ◆ | `agent.spawn` | `{ prompt, model, provider, parentAgentId?, ... }` → `{ model }` \| `{ deny }` |
 | ◇ | `agent.offer` | モデルに提示されるエージェント種別 |
 
 ### UI描画系（ui.*）
@@ -819,12 +824,12 @@ InfoNotice / SessionMode / PromptHint / AbovePrompt / Pane
 | ◇ | `config.describe` | メニュー上の行の表示。ラベル変更や非表示化 |
 | ◇ | `skill.prompt` | スキルのテキストがロードされる際 |
 | ◇ | `attribution.text` | コミットやPRに付ける文言を、エンジンが組み立てるとき → `{ text }` |
-| ◆ | `telemetry.log` | テレメトリの記録が送られる前。記録の中身を書き換えられる |
+| ◆ | `telemetry.log` | テレメトリの記録が送られる前。記録の中身を書き換えられる。インストールしたModでフックするには、`{ to: "collector" }`のマッチャーが必要 |
 | ◇ | `telemetry.mark` | 機能が1回使われたことの記録。エンジン自体は何もせず、公式のModが拾う |
 | ◇ | `engine.create` | `$`のfold自体：名詞の追加・除去 |
 | ◇ | `plugin.register` | 導入審査：`{ name, tier, uses[] }` → 許可 \| 拒否 |
 | ◆ | `classic.*` | 従来のsettingsフックと同一のJSON入出力。シェルhooksがそのseamのcore |
-| ◆ | `*` | 上記すべてのイベント、および全`$`操作（`fs.read`、`http.fetch`、`store.set`など）を、自分の位置・同じ権限で書き換え・拒否・`next.to`できる |
+| ◆ | `*` | 上記すべてのイベント（telemetryを除く）、および全`$`操作（`fs.read`、`http.fetch`、`store.set`など）を、自分の位置・同じ権限で書き換え・拒否・`next.to`できる |
 
 ## 自分で作るには
 
@@ -857,7 +862,7 @@ InfoNotice / SessionMode / PromptHint / AbovePrompt / Pane
 
 ### 手順で変わったところ
 
-- **環境変数が不要になった**：2.1.287では、`CLAUDE_CODE_ENABLE_FUNCTION_HOOKS`がなくてもModが読み込まれることを確認しました。`~/.claude/settings.json`に残したままでも動きますし、消しても構いません
+- **環境変数が不要になった**：2.1.287では、`CLAUDE_CODE_ENABLE_FUNCTION_HOOKS`がなくてもModが読み込まれることを確認しました。2.1.287以降はこの変数を無視するので、`~/.claude/settings.json`に残っている場合は消しておきます
 - **`/plugin-types`がなくなった**：型定義は、`--plugin-dir`で一度起動すれば書き出されます。前回の「自分で作るには」の手順3は、この起動に置き換わりました
 - **状態の型の宣言が必要になった**：`$.state`を使うときは、`plugin.json`の`types`で契約ファイルを指します
 - **テストと配布の手順が増えた**：`claude plugin test`と、marketplaceのマニフェストです
@@ -878,6 +883,9 @@ InfoNotice / SessionMode / PromptHint / AbovePrompt / Pane
 - **当時からあったが載せていなかった`$`の動詞**：`$.ui.blit`、`$.ui.panes`、`$.ui.scroll`、`$.ui.focus`、`$.prompt.read`、`$.prompt.compose`、`$.tool.check`、`$.agent.register`、`$.session.root`、`$.session.send`、`$.session.append`
 - **`next`の表**：`next.signal`と`next.budget`を足しました。どちらも当時からあった機能です
 - **`prompt.context`の説明を直した**：前回は「ターンごと」と書きましたが、型定義では「会話ごとに1回」です
+- **結果の書き換え方を直した**：前回は`{ ...r, text: ... }`と書きましたが、2.1.287ではモデルに届く内容が変わりません。`{ result }`を返す形に直しました
+- **`append`の位置を直した**：前回は「外側の`append`」と書きましたが、`append`は`user`の内側です。`next.to`の説明も、組織のModが`user`の層を飛ばす機能として書き直しました
+- **`agent.spawn`の戻り値を直した**：`{ text }`ではなく、`{ model }`か`{ deny }`です
 
 :::message
 足した14個のイベントの◆/◇は、公式の表記がありません。型定義の説明文をもとに、私が判断しました。◆にしたのは、`prompt.edit`、`ui.select`、`ui.scroll`、`ui.focus`、`session.append`、`session.send`、`session.end`、`telemetry.log`です。
@@ -885,7 +893,7 @@ InfoNotice / SessionMode / PromptHint / AbovePrompt / Pane
 
 ### 補足した説明
 
-- **安全性の注意**：隔離されているのは実行環境で、`$`を通せばClaude Codeと同じ範囲に届きます
+- **安全性の注意**：Modはサンドボックス化されておらず、`$`を通せばClaude Codeと同じ範囲に届きます
 - **10秒の数え方**：`next(e)`や`$`の呼び出しを待つ時間は、持ち時間に含みません
 - **読み込み順**：同じイベントにフックしたModは、読み込まれた順に並びます
 - **`/diff`の差し替え**と、**チームでの使い道**：公式ブログの内容を足しました
