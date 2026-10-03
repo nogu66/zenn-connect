@@ -20,6 +20,10 @@ noguです。
 
 https://x.com/bcherny/status/2099551291601248485?s=20
 
+(追記)最新版の情報はこちらの記事をご覧ください。
+
+https://zenn.dev/nogu66/articles/claude-mods-complete-guide
+
 ## Claude Modsとは
 
 Claude Mods（以下、Mod）とは、Claude Codeの機能や見た目をカスタマイズできる、プラグインの仕組みです。
